@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PDF Flipbook</title>
+  <style>
+    body {
+      background: #ccc;
+      font-family: sans-serif;
+    }
+    #flipbook {
+      width: 800px;
+      height: 600px;
+      margin: 20px auto;
+    }
+    #flipbook .page {
+      width: 400px;
+      height: 600px;
+      background: white;
+      box-shadow: 0 0 5px #aaa;
+      overflow: hidden;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align:center;">My PDF Flipbook</h1>
+  <div id="flipbook"></div>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Turn.js -->
+  <script src="https://cdn.jsdelivr.net/gh/blasten/turn.js@4/turn.min.js"></script>
+  <!-- PDF.js -->
+  <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+
+  <script>
+    const url = 'gazeta.pdf'; // name of your PDF
+
+    const pdfjsLib = window['pdfjs-dist/build/pdf'];
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
+
+    const flipbook = document.getElementById('flipbook');
+
+    pdfjsLib.getDocument(url).promise.then(pdfDoc => {
+      const totalPages = pdfDoc.numPages;
+
+      function renderPage(num) {
+        return pdfDoc.getPage(num).then(page => {
+          const viewport = page.getViewport({ scale: 1.5 });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          const renderContext = {
+            canvasContext: context,
+            viewport: viewport
+          };
+
+          return page.render(renderContext).promise.then(() => canvas);
+        });
+      }
+
+      const renderPromises = [];
+      for (let i = 1; i <= totalPages; i++) {
+        renderPromises.push(renderPage(i));
+      }
+
+      Promise.all(renderPromises).then(canvases => {
+        canvases.forEach(canvas => {
+          const pageDiv = document.createElement('div');
+          pageDiv.className = 'page';
+          pageDiv.appendChild(canvas);
+          flipbook.appendChild(pageDiv);
+        });
+
+        $('#flipbook').turn({
+          width: 800,
+          height: 600,
+          autoCenter: true,
+          display: 'single',
+          acceleration: true,
+          gradients: true
+        });
+      });
+    });
+  </script>
+</body>
+</html>
