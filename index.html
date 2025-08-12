@@ -9,13 +9,16 @@
       font-family: sans-serif;
     }
     #flipbook {
-      width: 800px;
-      height: 600px;
+      width: 90%;        /* Use 90% of the parent container or viewport */
+      max-width: 800px;  /* Limit max size for large screens */
+      height: auto;      /* Let height adjust accordingly */
       margin: 20px auto;
+}
     }
     #flipbook .page {
-      width: 400px;
-      height: 600px;
+      width: 50%;        /* Each page is half the flipbook width */
+      height: auto;
+      box-sizing: border-box;
       background: white;
       box-shadow: 0 0 5px #aaa;
       overflow: hidden;
