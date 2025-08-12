@@ -29,6 +29,8 @@
 </head>
 <body>
   <h1 style="text-align:center;">My PDF Flipbook</h1>
+  <button id="prev">Previous</button>
+  <button id="next">Next</button>
   <div id="flipbook"></div>
 
   <!-- jQuery -->
@@ -86,6 +88,14 @@
           display: 'single',
           acceleration: true,
           gradients: true
+        });
+        // Button handlers
+        $('#next').click(function() {
+          $('#flipbook').turn('next');
+        });
+
+        $('#prev').click(function() {
+          $('#flipbook').turn('previous');
         });
       });
     });
