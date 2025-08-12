@@ -4,31 +4,21 @@
   <meta charset="UTF-8" />
   <title>PDF Flipbook</title>
   <style>
-    body {
-      background: #ccc;
-      font-family: sans-serif;
-    }
-    #flipbook {
-      height: 90%;      /* Let height adjust accordingly */
-      width: Math.round(height * 0.707);        /* Use 90% of the parent container or viewport */
-      max-width: 1600px;  /* Limit max size for large screens */
-      margin: 20px auto;
-}
-    }
-    #flipbook .page {
-      height: 90%;
-      width: Math.round(height * 0.707);        /* Each page is half the flipbook width */
-      box-sizing: border-box;
-      background: white;
-      box-shadow: 0 0 5px #aaa;
-      overflow: hidden;
-    }
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-  </style>
+  #flipbook {
+    margin: 20px auto;
+  }
+  #flipbook .page {
+    box-sizing: border-box;
+    background: white;
+    box-shadow: 0 0 5px #aaa;
+    overflow: hidden;
+  }
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
+</style>
 </head>
 <body>
   <h1 style="text-align:center;">My PDF Flipbook</h1>
@@ -46,10 +36,19 @@
   <script>
     const url = 'gazeta.pdf'; // name of your PDF
 
-    const pdfjsLib = window['pdfjs-dist/build/pdf'];
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@latest/build/pdf.worker.min.js';
+   
+
+    const height = window.innerHeight * 0.9; 
+    const width = Math.round(height * 0.707);
 
     const flipbook = document.getElementById('flipbook');
+
+    // Set flipbook container size dynamically
+    flipbook.style.height = height + 'px';
+    flipbook.style.width = width + 'px';
+
+     const pdfjsLib = window['pdfjs-dist/build/pdf'];
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@latest/build/pdf.worker.min.js';
 
     pdfjsLib.getDocument(url).promise.then(pdfDoc => {
       const totalPages = pdfDoc.numPages;
